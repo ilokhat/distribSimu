@@ -26,13 +26,14 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.impl.Cuboid;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
 
-public class CuboidRoofed extends Cuboid {
+public class CuboidRoofedOld extends Cuboid {
 
   private double heightT;
   private double deltaFromSide;
 
-  public CuboidRoofed(double centerx, double centery, double length,
+  public CuboidRoofedOld(double centerx, double centery, double length,
       double width, double heightG, double orientation, double heightT,
       double deltaFromSide) {
     super(centerx, centery, length, width, heightG, orientation);
@@ -94,7 +95,7 @@ public class CuboidRoofed extends Cuboid {
     if (!(o instanceof Cuboid)) {
       return false;
     }
-    CuboidRoofed r = (CuboidRoofed) o;
+    CuboidRoofedOld r = (CuboidRoofedOld) o;
     return (this.centerx == r.centerx) && (this.centery == r.centery)
         && (this.width == r.width) && (this.length == r.length)
         && (this.orientation == r.orientation) && (this.height == r.height)
@@ -111,7 +112,7 @@ public class CuboidRoofed extends Cuboid {
     return generate(this, this.getZmin());
   }
 
-  public static IMultiSurface<IOrientableSurface> generate(CuboidRoofed c,
+  public static IMultiSurface<IOrientableSurface> generate(CuboidRoofedOld c,
       double zMin) {
 
     IDirectPositionList dpl = c.getFootprint().coord();

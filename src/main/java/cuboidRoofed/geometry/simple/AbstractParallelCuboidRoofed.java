@@ -1,9 +1,8 @@
-package cuboidRoofed.geometry.roofed;
+package cuboidRoofed.geometry.simple;
 
 import java.util.List;
 
-import cuboidRoofed.geometry.impl.CuboidRoofed;
-import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.simple.ParallelCuboid;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
 
 public abstract class AbstractParallelCuboidRoofed extends CuboidRoofed {
 
@@ -17,19 +16,21 @@ public abstract class AbstractParallelCuboidRoofed extends CuboidRoofed {
   @Override
   public Object[] getArray() {
     return new Object[] { this.centerx, this.centery,
-        this.length/* , this.width */, this.height/* , this.orientation */ };
+        this.length/* , this.width */, this.height/* , this.orientation */,
+        this.getHeightT(), this.getDeltaFromSide() };
   }
 
   @Override
   public int size() {
-    return 4;
+    return 6;
   }
 
   @Override
   public int hashCode() {
     int hashCode = 1;
     double[] array = { this.centerx, this.centery,
-        this.length/* , this.width */, this.orientation/* , this.height */ };
+        this.length/* , this.width */, this.orientation/* , this.height */,
+        this.getHeightT(), this.getDeltaFromSide() };
     for (double e : array)
       hashCode = 31 * hashCode + hashCode(e);
     return hashCode;
@@ -37,26 +38,30 @@ public abstract class AbstractParallelCuboidRoofed extends CuboidRoofed {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof ParallelCuboid)) {
+    if (!(o instanceof AbstractParallelCuboidRoofed)) {
       return false;
     }
-    ParallelCuboid r = (ParallelCuboid) o;
+    AbstractParallelCuboidRoofed r = (AbstractParallelCuboidRoofed) o;
+    // return r.equals(o);
     return (this.centerx == r.centerx) && (this.centery == r.centery)
-        && (this.width == r.width) && (this.length == r.length)
-        && (this.orientation == r.orientation) && (this.height == r.height);
+    /* && (this.width == r.width) */ && (this.length == r.length)
+        && (this.orientation == r.orientation) && (this.height == r.height)
+        && this.getHeightT() == r.getHeightT()
+        && this.getDeltaFromSide() == r.getDeltaFromSide();
   }
 
   public String toString() {
-    return "ParallelCuboid : " + " Centre " + this.centerx + "; " + this.centery
-        + " hauteur " + this.height + " largeur " + this.width + " longueur "
-        + this.width + " orientation " + this.orientation;
+    return "ParallelCuboidRoofed : " + " Centre " + this.centerx + "; "
+        + this.centery + " hauteur " + this.height + " largeur " + this.width
+        + " longueur " + this.width + " orientation " + this.orientation;
 
   }
 
   @Override
   public double[] toArray() {
     return new double[] { this.centerx, this.centery,
-        this.length/* , this.width */, this.height/* , this.orientation */ };
+        this.length/* , this.width */, this.height/* , this.orientation */ ,
+        this.getHeightT(), this.getDeltaFromSide() };
   }
 
   @Override
@@ -66,6 +71,8 @@ public abstract class AbstractParallelCuboidRoofed extends CuboidRoofed {
     this.length = list.get(2);
     // this.width = list.get(3);
     this.height = list.get(3);
+    this.setHeightT(list.get(4));
+    this.setDeltaFromSide(list.get(4));
     // this.orientation = list.get(5);
     this.generated = true;
   }

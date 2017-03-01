@@ -43,12 +43,12 @@ import fr.ign.cogit.simplu3d.rjmcmc.cuboid.optimizer.mix.MultipleBuildingsTrapez
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.LBuildingWithRoof;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.optimizer.OptimisedLShapeDirectRejection;
-import fr.ign.cogit.simplu3d.rjmcmc.paramshp.optimizer.OptimisedRCuboidDirectRejection;
 import fr.ign.mpp.configuration.BirthDeathModification;
 import fr.ign.mpp.configuration.GraphConfiguration;
 import fr.ign.mpp.configuration.GraphVertex;
 import fr.ign.parameters.Parameters;
 import fr.ign.random.Random;
+import optimizer.MultipleBuildingsRCuboid;
 
 public class EPFIFMultipleShapesRunner {
   public static boolean DEBUG_MODE = true;
@@ -66,11 +66,11 @@ public class EPFIFMultipleShapesRunner {
       + outFolder;
 
   public enum TYPE_OF_SIMUL {
-    TRAPEZOID, CUBOID, LSHAPE, ROOFEDCUBOID;
+    TRAPEZOID, CUBOID, LSHAPE, CUBOIDROOFED;
   }
 
-  public static TYPE_OF_SIMUL typeOfSimul = TYPE_OF_SIMUL.CUBOID;
-  public static boolean intersection = true;
+  public static TYPE_OF_SIMUL typeOfSimul = TYPE_OF_SIMUL.CUBOIDROOFED;
+  public static boolean intersection = false;
 
   public static void main(String[] args) throws Exception {
     // Type de forme à simuler
@@ -101,7 +101,7 @@ public class EPFIFMultipleShapesRunner {
         String fileName = "parameters_iauidf.xml";
         if (typeOfSimul == TYPE_OF_SIMUL.LSHAPE)
           fileName = "building_parameters_project_lshape.xml";
-        if (typeOfSimul == TYPE_OF_SIMUL.ROOFEDCUBOID)
+        if (typeOfSimul == TYPE_OF_SIMUL.CUBOIDROOFED)
           fileName = "building_parameters_project_rcuboid.xml";
 
         File f = new File(folderName + fileName);
@@ -601,7 +601,7 @@ public class EPFIFMultipleShapesRunner {
       case TRAPEZOID:
         processTrapezoid(featC, env, bPU, imu, r1, r2, p, bP);
         break;
-      case ROOFEDCUBOID:
+      case CUBOIDROOFED:
         processRoofedCuboid(featC, env, bPU, imu, r1, r2, p, bP);
         break;
       case LSHAPE:
@@ -662,7 +662,9 @@ public class EPFIFMultipleShapesRunner {
     // MultipleBuildingsTrapezoidCuboid oCB = new
     // MultipleBuildingsTrapezoidCuboid();
     RandomGenerator rng = Random.random();
-    OptimisedRCuboidDirectRejection oCB = new OptimisedRCuboidDirectRejection();
+    MultipleBuildingsRCuboid oCB = new MultipleBuildingsRCuboid();
+    // OptimisedRCuboidDirectRejection oCB = new
+    // OptimisedRCuboidDirectRejection();
     // MultipleBuildingsCuboid oCB = new MultipleBuildingsCuboid();
     PredicateIAUIDF<CuboidRoofed, GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> pred = new PredicateIAUIDF<>(
         bPU, r1, r2);
@@ -671,8 +673,11 @@ public class EPFIFMultipleShapesRunner {
     }
     // Lancement de l'optimisation avec unité foncière, paramètres,
     // environnement, id et prédicat
-    GraphConfiguration<CuboidRoofed> cc = oCB.process(rng, bPU, p, env,
-        bPU.getId(), pred, bPU.getGeom());
+    // GraphConfiguration<CuboidRoofed> cc = oCB.process(rng, bPU, p, env,
+    // bPU.getId(), pred, bPU.getGeom());
+    GraphConfiguration<CuboidRoofed> cc = oCB.process(bPU, p, env, pred, r1, r2,
+        bP);
+
     if (cc == null) {
       return;
     }
@@ -727,6 +732,12 @@ public class EPFIFMultipleShapesRunner {
       }
       AttributeManager.addAttribute(feat, "Aire", area, "Double");
       AttributeManager.addAttribute(feat, "Volume", volume, "Double");
+      if (v.getValue() instanceof CuboidRoofed) {
+        CuboidRoofed cbr = (CuboidRoofed) v.getValue();
+        AttributeManager.addAttribute(feat, "HauteurT", cbr.getHeightT(),
+            "Double");
+        AttributeManager.addAttribute(feat, "HautTot", cbr.height(), "Double");
+      }
       featC.add(feat);
     }
   }

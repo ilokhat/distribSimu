@@ -82,12 +82,12 @@
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>simplu3d</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.ign.cogit</groupId>
 			<artifactId>simplu3d-rules</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 			<!-- <exclusions> -->
 			<!-- <exclusion> -->
 			<!-- <groupId>jama</groupId> -->
