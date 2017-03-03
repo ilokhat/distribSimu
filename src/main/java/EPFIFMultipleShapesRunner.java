@@ -69,7 +69,7 @@ public class EPFIFMultipleShapesRunner {
     TRAPEZOID, CUBOID, LSHAPE, CUBOIDROOFED;
   }
 
-  public static TYPE_OF_SIMUL typeOfSimul = TYPE_OF_SIMUL.CUBOIDROOFED;
+  public static TYPE_OF_SIMUL typeOfSimul = TYPE_OF_SIMUL.CUBOID;
   public static boolean intersection = false;
 
   public static void main(String[] args) throws Exception {
@@ -80,7 +80,7 @@ public class EPFIFMultipleShapesRunner {
     // IMU
 
     Map<Integer, List<Regulation>> regulation = prepareRegulation();
-
+    System.out.println(regulation.size());
     // On traite indépendamment chaque zone imu
     for (int currentImu : regulation.keySet()) {
 
@@ -268,12 +268,11 @@ public class EPFIFMultipleShapesRunner {
     boolean isOk = true;
 
     for (BasicPropertyUnit bPU : env.getBpU()) {
-
       if (bPU.getCadastralParcels().get(0).hasToBeSimulated()) {
         featC.addAll(simulationForEachBPU(env, bPU, lRegulation, imu, fParam));
       }
-
     }
+
     System.out.println("-- Nombre de surfaces : " + debugSurface.size());
     String fileName = out_folder + "simul_" + imu + "_" + typeOfSimul + "_"
         + intersection + ".shp";
@@ -661,8 +660,8 @@ public class EPFIFMultipleShapesRunner {
 
     // MultipleBuildingsTrapezoidCuboid oCB = new
     // MultipleBuildingsTrapezoidCuboid();
-    RandomGenerator rng = Random.random();
-    MultipleBuildingsRCuboid oCB = new MultipleBuildingsRCuboid();
+    // RandomGenerator rng = Random.random();
+    MultipleBuildingsRCuboid oCB = new MultipleBuildingsRCuboid(intersection);
     // OptimisedRCuboidDirectRejection oCB = new
     // OptimisedRCuboidDirectRejection();
     // MultipleBuildingsCuboid oCB = new MultipleBuildingsCuboid();

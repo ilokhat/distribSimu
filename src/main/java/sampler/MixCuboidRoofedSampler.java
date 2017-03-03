@@ -2,29 +2,28 @@ package sampler;
 
 import org.apache.commons.math3.random.RandomGenerator;
 
-import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
 import fr.ign.mpp.kernel.ObjectBuilder;
 import fr.ign.mpp.kernel.ObjectSampler;
 import fr.ign.rjmcmc.kernel.Transform;
 import fr.ign.rjmcmc.kernel.Variate;
 
-public class MixCuboidRoofedSampler implements ObjectSampler<CuboidRoofed> {
+public class MixCuboidRoofedSampler<T> implements ObjectSampler<T> {
 
   RandomGenerator engine;
   double p_simple;
-  CuboidRoofed object;
+  T object;
   Variate variate;
   Transform transformBand2;
   Transform transformBand1;
-  ObjectBuilder<CuboidRoofed> builder1;
-  ObjectBuilder<CuboidRoofed> builder2;
+  ObjectBuilder<T> builder1;
+  ObjectBuilder<T> builder2;
   Class<?> c1;
   Class<?> c2;
 
   public MixCuboidRoofedSampler(RandomGenerator e, double p_simple,
       Transform transformBand1, Transform transformBand2,
-      ObjectBuilder<CuboidRoofed> builder1,
-      ObjectBuilder<CuboidRoofed> builder2, Class<?> c1, Class<?> c2) {
+      ObjectBuilder<T> builder1, ObjectBuilder<T> builder2, Class<?> c1,
+      Class<?> c2) {
     this.engine = e;
     this.p_simple = p_simple;
     this.transformBand2 = transformBand2;
@@ -57,12 +56,12 @@ public class MixCuboidRoofedSampler implements ObjectSampler<CuboidRoofed> {
   }
 
   @Override
-  public CuboidRoofed getObject() {
+  public T getObject() {
     return this.object;
   }
 
   @Override
-  public double pdf(CuboidRoofed t) {
+  public double pdf(T t) {
     if (c2 != null && c2.isInstance(t)) {
       double[] val1 = new double[builder2.size()];
       builder2.setCoordinates(t, val1);

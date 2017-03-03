@@ -73,7 +73,11 @@ import transform.RotateRCuboid;
 public class MultipleBuildingsRCuboid
     extends DefaultSimPLU3DOptimizer<CuboidRoofed> {
 
-  public static boolean ALLOW_INTERSECTING_CUBOID = false;
+  private boolean ALLOW_INTERSECTING_CUBOID = false;
+
+  public MultipleBuildingsRCuboid(boolean allowIntersect) {
+    this.ALLOW_INTERSECTING_CUBOID = allowIntersect;
+  }
 
   public GraphConfiguration<CuboidRoofed> process(BasicPropertyUnit bpu,
       Parameters p, Environnement env,
@@ -222,6 +226,16 @@ public class MultipleBuildingsRCuboid
     double minDFS = p.getDouble("minDelta");
     double maxDFS = p.getDouble("maxDelta");
 
+    System.out.println("minl " + minlen);
+    System.out.println("maxl " + maxlen);
+    System.out.println("minw " + minwid);
+    System.out.println("maxw " + maxwid);
+    System.out.println("minh " + minheight);
+    System.out.println("maxh " + maxheight);
+    System.out.println("minht " + minheightT);
+    System.out.println("maxht " + maxheightT);
+    System.out.println("maxht2 " + maxheightT2);
+
     IEnvelope env = bpU.getGeom().envelope();
     // in multi object situations, we need an object builder for each
     // subtype and a sampler for the supertype (end of file)
@@ -243,6 +257,8 @@ public class MultipleBuildingsRCuboid
     if (r1 != null && r1.getArt_102() != 99) {
       maxheight = Math.min(maxheight, r1.getArt_102());
     }
+    // on déduit la hauteur du toit
+    maxheight -= maxheightT;
 
     double[] d = new double[] { env.maxX(), env.maxY(), maxlen, maxwid,
         maxheight, Math.PI, maxheightT, maxDFS };
@@ -250,7 +266,8 @@ public class MultipleBuildingsRCuboid
     if (r2 != null && r2.getArt_102() != 99) {
       maxheight2 = Math.min(maxheight2, r2.getArt_102());
     }
-
+    // on déduit la hauteur du toit
+    maxheight2 -= maxheightT2;
     // On répète la même chose pour la seconde
     double[] d2 = new double[] { env.maxX(), env.maxY(), maxlen, maxwid,
         maxheight2, Math.PI, maxheightT2, maxDFS };
@@ -262,6 +279,16 @@ public class MultipleBuildingsRCuboid
     for (int i = 0; i < d.length; i++) {
       d2[i] = d2[i] - v[i];
     }
+    System.out.println("minl " + minlen);
+    System.out.println("maxl " + maxlen);
+    System.out.println("minw " + minwid);
+    System.out.println("maxw " + maxwid);
+    System.out.println("minh " + minheight);
+    System.out.println("maxh " + maxheight);
+    System.out.println("minht " + minheightT);
+    System.out.println("maxht " + maxheightT);
+    System.out.println("maxht2 " + maxheightT2);
+    System.out.println("------------------------------------");
 
     System.out.println(Arrays.toString(d));
     System.out.println(Arrays.toString(d2));
@@ -446,9 +473,9 @@ public class MultipleBuildingsRCuboid
     // System.out.println("************* transformBand2 " + transformBand2);
     // CuboidSampler objectSampler = new CuboidSampler(rng, p_simple,
     // transformSimple, transformParallel);
-    MixCuboidRoofedSampler objectSampler = new MixCuboidRoofedSampler(rng,
-        p_simple, transformBand1, transformBand2, builderBand1, builderBand2,
-        c1, c2);
+    MixCuboidRoofedSampler<CuboidRoofed> objectSampler = new MixCuboidRoofedSampler<>(
+        rng, p_simple, transformBand1, transformBand2, builderBand1,
+        builderBand2, c1, c2);
 
     // poisson distribution
     PoissonDistribution distribution = new PoissonDistribution(rng,
