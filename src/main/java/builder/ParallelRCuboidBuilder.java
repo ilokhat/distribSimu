@@ -7,12 +7,12 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
-import cuboidRoofed.geometry.simple.AbstractParallelCuboidRoofed;
-import cuboidRoofed.geometry.simple.ParallelCuboidRoofed;
-import cuboidRoofed.geometry.simple.ParallelCuboidRoofed2;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.AbstractParallelCuboidRoofed;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.ParallelCuboidRoofed;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.ParallelCuboidRoofed2;
 import fr.ign.mpp.kernel.ObjectBuilder;
 
 public class ParallelRCuboidBuilder implements ObjectBuilder<CuboidRoofed> {

@@ -3,9 +3,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.log4j.Logger;
@@ -58,7 +61,8 @@ public class EPFIFMultipleShapesRunner {
   public static List<IMultiSurface<IOrientableSurface>> debugSurface = new ArrayList<>();
   public static List<IMultiCurve<IOrientableCurve>> debugLine = new ArrayList<>();
 
-  public static final String outFolder = "outoss/";
+  // public static final String outFolder = "outoss/";
+  public static final String outFolder = "outCapa/";
 
   public final static String folder = "/home/imran/Téléchargements/Test_IAUIDF/Eval_EPF_2/";
   public final static String file_rules = folder + "rules.csv";
@@ -70,7 +74,7 @@ public class EPFIFMultipleShapesRunner {
   }
 
   public static TYPE_OF_SIMUL typeOfSimul = TYPE_OF_SIMUL.CUBOID;
-  public static boolean intersection = false;
+  public static boolean intersection = true;
 
   public static void main(String[] args) throws Exception {
     // Type de forme à simuler
@@ -81,42 +85,47 @@ public class EPFIFMultipleShapesRunner {
 
     Map<Integer, List<Regulation>> regulation = prepareRegulation();
     System.out.println(regulation.size());
-    // On traite indépendamment chaque zone imu
-    for (int currentImu : regulation.keySet()) {
-
-      System.out.println("Numéro imu : " + currentImu);
-      // if (currentImu != 75042210) {
-      if (currentImu != 77049072) { // 91009675
-        System.out.println("imu " + currentImu + " passing");
-        continue;
-      }
-      try {
-
-        List<Regulation> lR = regulation.get(currentImu);
-
-        // String folderName = BasicSimulator.class.getClassLoader()
-        // .getResource("scenario/").getPath();
-        String folderName = "/home/imran/testoss/EPFIF/";
-
-        String fileName = "parameters_iauidf.xml";
-        if (typeOfSimul == TYPE_OF_SIMUL.LSHAPE)
-          fileName = "building_parameters_project_lshape.xml";
-        if (typeOfSimul == TYPE_OF_SIMUL.CUBOIDROOFED)
-          fileName = "building_parameters_project_rcuboid.xml";
-
-        File f = new File(folderName + fileName);
-
-        boolean simul = simulRegulationByIMU(currentImu,
-            folder + currentImu + "/", lR, f);
-
-        if (!simul) {
-          log.warn("--Probleme pour la simulation : " + currentImu);
+    for (int i = 0; i < 2; ++i) {
+      intersection = (i % 2) == 0; // on teste true et false
+      // On traite indépendamment chaque zone imu
+      for (int currentImu : regulation.keySet()) {
+        System.out.println("Numéro imu : " + currentImu);
+        Set<Integer> listeCapa = new HashSet<>();
+        Collections.addAll(listeCapa, 77049072, 75009782, 91014805, 91014124,
+            75020917);
+        // if (currentImu != 75042210) {
+        // if (currentImu != 77049072) { // 91009675
+        if (!listeCapa.contains(currentImu)) {
+          System.out.println("imu " + currentImu + " passing");
+          continue;
         }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+        try {
+          List<Regulation> lR = regulation.get(currentImu);
 
+          // String folderName = BasicSimulator.class.getClassLoader()
+          // .getResource("scenario/").getPath();
+          String folderName = "/home/imran/testoss/EPFIF/";
+
+          String fileName = "parameters_iauidf.xml";
+          if (typeOfSimul == TYPE_OF_SIMUL.LSHAPE)
+            fileName = "building_parameters_project_lshape.xml";
+          if (typeOfSimul == TYPE_OF_SIMUL.CUBOIDROOFED)
+            fileName = "building_parameters_project_rcuboid.xml";
+
+          File f = new File(folderName + fileName);
+
+          boolean simul = simulRegulationByIMU(currentImu,
+              folder + currentImu + "/", lR, f);
+
+          if (!simul) {
+            log.warn("--Probleme pour la simulation : " + currentImu);
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
     }
+
   }
 
   // Initialisation des attributs différents du schéma de base
@@ -362,7 +371,7 @@ public class EPFIFMultipleShapesRunner {
 
       IPoint dp = new GM_Point(feat.getGeom().centroid());
 
-      if (bPU.getpol2D().contains(dp)) {
+      if (bPU.getPol2D().contains(dp)) {
         return feat;
       }
 
@@ -561,7 +570,7 @@ public class EPFIFMultipleShapesRunner {
     // Si ce n'est pas respecté on ne fait même pas de simulation
     double r_art5 = r1.getArt_5();
     if (r_art5 != 99) {
-      if (bPU.getpol2D().area() < r_art5) {
+      if (bPU.getPol2D().area() < r_art5) {
         return featC;
       }
     }
@@ -615,7 +624,7 @@ public class EPFIFMultipleShapesRunner {
       Environnement env, BasicPropertyUnit bPU, int imu, Regulation r1,
       Regulation r2, Parameters p, BandProduction bP) throws Exception {
     MultipleBuildingsCuboid oCB = new MultipleBuildingsCuboid();
-    oCB.ALLOW_INTERSECTING_CUBOID = intersection;
+    MultipleBuildingsCuboid.ALLOW_INTERSECTING_CUBOID = intersection;
     PredicateIAUIDF<Cuboid, GraphConfiguration<Cuboid>, BirthDeathModification<Cuboid>> pred = new PredicateIAUIDF<>(
         bPU, r1, r2);
     if (p.getBoolean("shapefilewriter")) {
@@ -636,7 +645,7 @@ public class EPFIFMultipleShapesRunner {
       Regulation r2, Parameters p, BandProduction bP) throws Exception {
 
     MultipleBuildingsTrapezoidCuboid oCB = new MultipleBuildingsTrapezoidCuboid();
-    oCB.ALLOW_INTERSECTING_AbstractSimpleBuilding = intersection;
+    MultipleBuildingsTrapezoidCuboid.ALLOW_INTERSECTING_AbstractSimpleBuilding = intersection;
     // MultipleBuildingsCuboid oCB = new MultipleBuildingsCuboid();
     PredicateIAUIDF<AbstractSimpleBuilding, GraphConfiguration<AbstractSimpleBuilding>, BirthDeathModification<AbstractSimpleBuilding>> pred = new PredicateIAUIDF<>(
         bPU, r1, r2);

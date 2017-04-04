@@ -12,8 +12,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import builder.CuboidRoofedBuilder2;
 import builder.ParallelRCuboidBuilder;
 import cuboidRoofed.geometry.impl.CuboidRoofed2;
-import cuboidRoofed.geometry.simple.ParallelCuboidRoofed;
-import cuboidRoofed.geometry.simple.ParallelCuboidRoofed2;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
@@ -35,6 +33,8 @@ import fr.ign.cogit.simplu3d.rjmcmc.generic.sampler.GreenSamplerBlockTemperature
 import fr.ign.cogit.simplu3d.rjmcmc.generic.visitor.PrepareVisitors;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.builder.CuboidRoofedBuilder;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.CuboidRoofed;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.ParallelCuboidRoofed;
+import fr.ign.cogit.simplu3d.rjmcmc.paramshp.geometry.impl.ParallelCuboidRoofed2;
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.transform.MoveRCuboid;
 import fr.ign.mpp.DirectRejectionSampler;
 import fr.ign.mpp.DirectSampler;
@@ -86,7 +86,7 @@ public class MultipleBuildingsRCuboid
 
     // Géométrie de l'unité foncière sur laquelle porte la génération (on se
     // permet de faire un petit buffer)
-    IGeometry geom = bpu.getpol2D().buffer(1);
+    IGeometry geom = bpu.getPol2D().buffer(1);
 
     // Définition de la fonction d'optimisation (on optimise en décroissant)
     // relative au volume
@@ -516,7 +516,7 @@ public class MultipleBuildingsRCuboid
 
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelLength = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 6, 2), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 7, 2), 0.2, 1.0,
           "ChgLengthP2");
       kernels.add(parallelLength);
 
@@ -524,19 +524,19 @@ public class MultipleBuildingsRCuboid
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelHeight = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 6, 3), 0.2, 1.0, "ChgHeightP");
+            new ChangeValue(amplitudeHeight, 7, 3), 0.2, 1.0, "ChgHeightP");
         kernels.add(parallelHeight);
       }
       if ((p.getDouble("maxheightT") - p.getDouble("minheightT")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelHeightT = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 6, 4), 0.2, 1.0, "ChgHeightTP");
+            new ChangeValue(amplitudeHeight, 7, 4), 0.2, 1.0, "ChgHeightTP");
         kernels.add(parallelHeightT);
       }
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> changeDFSkernel = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 6, 5), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 7, 5), 0.2, 1.0,
           "ChgDFS");
       kernels.add(changeDFSkernel);
     } else {
@@ -557,31 +557,31 @@ public class MultipleBuildingsRCuboid
 
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleLength = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 2), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 2), 0.2, 1.0,
           "ChgLengthP2");
       kernels.add(simpleLength);
       if ((p.getDouble("maxheightG") - p.getDouble("minheightG")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simplelHeight = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 8, 4), 0.2, 1.0, "ChgHeightP");
+            new ChangeValue(amplitudeHeight, 9, 4), 0.2, 1.0, "ChgHeightP");
         kernels.add(simplelHeight);
       }
       if ((p.getDouble("maxheightT") - p.getDouble("minheightT")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleHeightT = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 8, 6), 0.2, 1.0, "ChgHeightTP");
+            new ChangeValue(amplitudeHeight, 9, 6), 0.2, 1.0, "ChgHeightTP");
         kernels.add(simpleHeightT);
       }
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> changeDFSkernel = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 7), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 7), 0.2, 1.0,
           "ChgDFS");
       kernels.add(changeDFSkernel);
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleWidth = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 3), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 3), 0.2, 1.0,
           "ChgWidth");
       kernels.add(simpleWidth);
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleRotatekernel = new Kernel<>(
@@ -619,7 +619,7 @@ public class MultipleBuildingsRCuboid
 
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelLength = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 6, 2), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 7, 2), 0.2, 1.0,
           "ChgLengthP2");
       kernels.add(parallelLength);
 
@@ -627,19 +627,19 @@ public class MultipleBuildingsRCuboid
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelHeight = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 6, 3), 0.2, 1.0, "ChgHeightP");
+            new ChangeValue(amplitudeHeight, 7, 3), 0.2, 1.0, "ChgHeightP");
         kernels.add(parallelHeight);
       }
       if ((p.getDouble("maxheightT") - p.getDouble("minheightT")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> parallelHeightT = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 6, 4), 0.2, 1.0, "ChgHeightTP");
+            new ChangeValue(amplitudeHeight, 7, 4), 0.2, 1.0, "ChgHeightTP");
         kernels.add(parallelHeightT);
       }
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> changeDFSkernel = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 6, 5), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 7, 5), 0.2, 1.0,
           "ChgDFS");
       kernels.add(changeDFSkernel);
     } else {
@@ -661,32 +661,32 @@ public class MultipleBuildingsRCuboid
 
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleLength = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 2), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 2), 0.2, 1.0,
           "ChgLengthP2");
       kernels.add(simpleLength);
       if ((p.getDouble("maxheightG") - p.getDouble("minheightG")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simplelHeight = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 8, 4), 0.2, 1.0, "ChgHeightP");
+            new ChangeValue(amplitudeHeight, 9, 4), 0.2, 1.0, "ChgHeightP");
         kernels.add(simplelHeight);
       }
       if ((p.getDouble("maxheightT") - p.getDouble("minheightT")) > 0.2) {
         double amplitudeHeight = p.getDouble("amplitudeHeight");
         Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleHeightT = new Kernel<>(
             pView, pView, variate, variate,
-            new ChangeValue(amplitudeHeight, 8, 6), 0.2, 1.0, "ChgHeightTP");
+            new ChangeValue(amplitudeHeight, 9, 6), 0.2, 1.0, "ChgHeightTP");
         kernels.add(simpleHeightT);
       }
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> changeDFSkernel = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 7), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 7), 0.2, 1.0,
           "ChgDFS");
       kernels.add(changeDFSkernel);
 
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleWidth = new Kernel<>(
           pView, pView, variate, variate,
-          new ChangeValue(p.getDouble("amplitudeMaxDim"), 8, 3), 0.2, 1.0,
+          new ChangeValue(p.getDouble("amplitudeMaxDim"), 9, 3), 0.2, 1.0,
           "ChgWidth");
       kernels.add(simpleWidth);
       Kernel<GraphConfiguration<CuboidRoofed>, BirthDeathModification<CuboidRoofed>> simpleRotatekernel = new Kernel<>(
